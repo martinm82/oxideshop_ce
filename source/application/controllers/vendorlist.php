@@ -1,31 +1,29 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   views
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
- * @version   SVN: $Id$
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
  * List of articles for a selected vendor.
  * Collects list of articles, according to it generates links for list gallery,
- * metatags (for search engines). Result - "vendorlist.tpl" template.
+ * meta tags (for search engines). Result - "vendorlist.tpl" template.
  * OXID eShop -> (Any selected shop product category).
  */
 class VendorList extends aList
@@ -93,7 +91,7 @@ class VendorList extends aList
      * list sorting rules. Loads list of articles which belong to this vendor
      * Generates page navigation data
      * such as previous/next window URL, number of available pages, generates
-     * metatags info (oxubase::_convertForMetaTags()) and returns name of
+     * meta tags info (oxUBase::_convertForMetaTags()) and returns name of
      * template to render.
      *
      * @return  string  $this->_sThisTemplate   current template file name
@@ -103,7 +101,7 @@ class VendorList extends aList
         oxUBase::render();
 
         // load vendor
-        if ( ( $this->getVendorTree() ) ) {
+        if ( ( $this->_getVendorId() && $this->getVendorTree() ) ) {
             if ( ( $oVendor = $this->getActVendor() ) ) {
                 if ( $oVendor->getId() != 'root' ) {
                     // load the articles
@@ -138,7 +136,7 @@ class VendorList extends aList
      * @param string $sSortBy  sort field
      * @param string $sSortDir sort direction (optional)
      *
-     * @deprecated since v4.7.3/5.0.3 (2013-01-07); dublicated code
+     * @deprecated since v4.7.3/5.0.3 (2013-01-07); duplicated code
      *
      * @return null
      */
@@ -152,7 +150,7 @@ class VendorList extends aList
      *
      * @param string $sCnid sortable item id
      *
-     * @deprecated since v4.7.3/5.0.3 (2013-01-07); dublicated code
+     * @deprecated since v4.7.3/5.0.3 (2013-01-07); duplicated code
      *
      * @return string
      */
@@ -173,18 +171,18 @@ class VendorList extends aList
         $sVendorId = $oVendor->getId();
 
         // load only articles which we show on screen
-        $iNrofCatArticles = (int) $this->getConfig()->getConfigParam( 'iNrofCatArticles' );
-        $iNrofCatArticles = $iNrofCatArticles ? $iNrofCatArticles : 1;
+        $iNrOfCatArticles = (int) $this->getConfig()->getConfigParam( 'iNrofCatArticles' );
+        $iNrOfCatArticles = $iNrOfCatArticles ? $iNrOfCatArticles : 1;
 
-        $oArtList = oxNew( 'oxarticlelist' );
-        $oArtList->setSqlLimit( $iNrofCatArticles * $this->_getRequestPageNr(), $iNrofCatArticles );
+        $oArtList = oxNew( 'oxArticleList' );
+        $oArtList->setSqlLimit( $iNrOfCatArticles * $this->_getRequestPageNr(), $iNrOfCatArticles );
         $oArtList->setCustomSorting( $this->getSortingSql( $this->getSortIdent() ) );
 
         // load the articles
         $this->_iAllArtCnt = $oArtList->loadVendorArticles( $sVendorId, $oVendor );
 
         // counting pages
-        $this->_iCntPages = round( $this->_iAllArtCnt / $iNrofCatArticles + 0.49 );
+        $this->_iCntPages = round( $this->_iAllArtCnt / $iNrOfCatArticles + 0.49 );
 
         return array( $oArtList, $this->_iAllArtCnt );
     }
@@ -239,7 +237,7 @@ class VendorList extends aList
     }
 
     /**
-     * Returns if vendor has visible subcats and load them.
+     * Returns if vendor has visible sub-cats and load them.
      *
      * @return bool
      */
@@ -247,7 +245,7 @@ class VendorList extends aList
     {
         if ( $this->_blVisibleSubCats === null ) {
             $this->_blVisibleSubCats = false;
-            if ( ( $oVendorTree = $this->getVendorTree() ) ) {
+            if ( ($this->_getVendorId() && $oVendorTree = $this->getVendorTree() ) ) {
                 if ( ( $oVendor = $this->getActVendor() ) ) {
                     if ( $oVendor->getId() == 'root' ) {
                         $this->_blVisibleSubCats = $oVendorTree->count();
@@ -317,9 +315,14 @@ class VendorList extends aList
      */
     public function getTreePath()
     {
-        if ( $oVendorTree = $this->getVendorTree() ) {
+        if ( $this->_getVendorId() && $oVendorTree = $this->getVendorTree() ) {
             return $oVendorTree->getPath();
         }
+    }
+
+    protected function _getVendorId()
+    {
+        return oxRegistry::getConfig()->getRequestParameter( 'cnid' );
     }
 
     /**
@@ -331,7 +334,7 @@ class VendorList extends aList
     {
         if ( $this->_oActCategory === null ) {
             $this->_oActCategory = false;
-            if ( ( $oVendorTree = $this->getVendorTree() ) ) {
+            if ( ( $this->_getVendorId() && $oVendorTree = $this->getVendorTree() ) ) {
                 if ( $oVendor = $this->getActVendor() ) {
                     $this->_oActCategory = $oVendor;
                 }
@@ -369,11 +372,11 @@ class VendorList extends aList
     }
 
     /**
-     * Returns current view keywords seperated by comma
+     * Returns current view keywords separated by comma
      * (calls parent::_collectMetaKeyword())
      *
      * @param string $sKeywords               data to use as keywords
-     * @param bool   $blRemoveDuplicatedWords remove dublicated words
+     * @param bool   $blRemoveDuplicatedWords remove duplicated words
      *
      * @return string
      */
@@ -388,7 +391,7 @@ class VendorList extends aList
      *
      * @param string $sMeta     category path
      * @param int    $iLength   max length of result, -1 for no truncation
-     * @param bool   $blDescTag if true - performs additional dublicate cleaning
+     * @param bool   $blDescTag if true - performs additional duplicate cleaning
      *
      * @return string
      */
@@ -398,7 +401,7 @@ class VendorList extends aList
     }
 
     /**
-     * returns object, assosiated with current view.
+     * returns object, associated with current view.
      * (the object that is shown in frontend)
      *
      * @param int $iLang language id
@@ -453,12 +456,12 @@ class VendorList extends aList
      /**
      * Returns vendor tree
      *
-     * @return oxvendorlist
+     * @return oxVendorList
      */
     public function getVendorTree()
     {
-        if ( $this->_oVendorTree === null) {
-            $oVendorTree = oxNew( 'oxvendorlist' );
+        if ( $this->_getVendorId() && $this->_oVendorTree === null) {
+            $oVendorTree = oxNew( 'oxVendorList' );
             $oVendorTree->buildVendorTree( 'vendorlist', $this->getActVendor()->getId(), $this->getConfig()->getShopHomeURL() );
             $this->_oVendorTree = $oVendorTree;
         }
@@ -469,7 +472,7 @@ class VendorList extends aList
     /**
      * Vendor tree setter
      *
-     * @param oxvendorlist $oVendorTree vendor tree
+     * @param oxVendorList $oVendorTree vendor tree
      *
      * @return null
      */

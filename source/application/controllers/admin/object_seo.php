@@ -1,25 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   admin
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
- * @version   SVN: $Id$
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
@@ -80,16 +78,36 @@ class Object_Seo extends oxAdminDetails
                 $aSeoData['oxfixed'] = 0;
             }
 
-            $oEncoder = $this->_getEncoder();
+            $sParams = $this->_getAdditionalParams($aSeoData);
 
+            $oEncoder = $this->_getEncoder();
             // marking self and page links as expired
-            $oEncoder->markAsExpired( $sOxid, $iShopId, 1, $iLang );
+            $oEncoder->markAsExpired($sOxid, $iShopId, 1, $iLang, $sParams);
 
             // saving
             $oEncoder->addSeoEntry( $sOxid, $iShopId, $iLang, $this->_getStdUrl( $sOxid ),
                                     $aSeoData['oxseourl'], $this->_getSeoEntryType(), $aSeoData['oxfixed'],
                                     trim( $aSeoData['oxkeywords'] ), trim( $aSeoData['oxdescription'] ), $this->processParam( $aSeoData['oxparams'] ), true, $this->_getAltSeoEntryId() );
         }
+    }
+
+    /**
+     * Gets additional params from aSeoData['oxparams'] if it is set.
+     *
+     * @param array $aSeoData Seo data array
+     *
+     * @return null|string
+     */
+    protected function _getAdditionalParams($aSeoData)
+    {
+        $sParams = null;
+        if (isset($aSeoData['oxparams'])) {
+            if (preg_match('/([a-z]*#)?(?<objectseo>[a-z0-9]+)(#[0-9])?/i', $aSeoData['oxparams'], $aMatches)) {
+                $sQuotedObjectSeoId = oxDb::getDb()->quote($aMatches['objectseo']);
+                $sParams = "oxparams = {$sQuotedObjectSeoId}";
+            }
+        }
+        return $sParams;
     }
 
     /**

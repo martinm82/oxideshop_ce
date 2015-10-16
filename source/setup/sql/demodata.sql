@@ -76,8 +76,8 @@ INSERT INTO `oxactions` (`OXID`, `OXSHOPID`, `OXTYPE`, `OXTITLE`, `OXTITLE_1`, `
 ('d51f5e7446e9193188fb315c9d60520a', 'oxbaseshop', 2, 'Expired promotion', 'Expired promotion', '', '', '<a href="[{ oxgetseourl type=''oxarticle'' oxid=''1651'' }]">                                 <img alt="" src="[{$oViewConf->getPictureDir()}]promo/expired_en.jpg" /></a>', '<a href="[{ oxgetseourl type=''oxarticle'' oxid=''1651'' }]">                                 <img alt="" src="[{$oViewConf->getPictureDir()}]promo/expired_de.jpg" /></a>', '', '', 0, '2010-01-01 00:00:00', '2010-02-01 00:00:00', '', '', '', '', '', '', '', '', 1),
 ('d51545e80843be666a9326783a73e91d', 'oxbaseshop', 2, 'Upcoming Promotion', 'Upcoming Promotion', '', '', '<a href="[{ oxgetseourl type=''oxmanufacturer'' oxid=''9434afb379a46d6c141de9c9e5b94fcf'' }]"><img alt="" src="[{$oViewConf->getPictureDir()}]promo/upcoming_en.jpg" /></a>', '<p>&nbsp;</p>', '', '', 0, '2010-10-10 00:00:00', '2011-10-10 00:00:00', '', '', '', '', '', '', '', '', 3),
 ('b5639c6431b26687321f6ce654878fa5', 'oxbaseshop', 3, 'Banner 1', 'Banner 1', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'surfer_wave_promo.jpg', 'surfer_wave(1)_promo.jpg', '', '', '', '', '', '', 0),
-('b56a097dedf5db44e20ed56ac6defaa8', 'oxbaseshop', 3, 'Banner 2', 'Banner 2', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'longboard_startpage(1)_promo.jpg', 'longboard_startpage_promo.jpg', '', '', '', '', '', '', 0),
-('b56efaf6c93664b6dca5b1cee1f87057', 'oxbaseshop', 3, 'Banner 3', 'Banner 3', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'cabrinha_startpage(1)_promo.jpg', 'cabrinha_startpage_promo.jpg', '', '', '', '', '', '', 0),
+('b56a097dedf5db44e20ed56ac6defaa8', 'oxbaseshop', 3, 'Banner 2', 'Banner 2', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'longboard_startpage_promo.jpg', 'longboard_startpage(1)_promo.jpg', '', '', '', '', '', '', 0),
+('b56efaf6c93664b6dca5b1cee1f87057', 'oxbaseshop', 3, 'Banner 3', 'Banner 3', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'cabrinha_startpage_promo.jpg', 'cabrinha_startpage(1)_promo.jpg', '', '', '', '', '', '', 0),
 ('cb34f86f56162d0c95890b5985693710', 'oxbaseshop', 3, 'Banner 4', 'Banner 4', '', '', '', '', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'banner4de(1)_promo.jpg', 'banner4en_promo.jpg', '', '', 'Wakeboarding/Wakeboards/', 'en/Wakeboarding/Wakeboards/', '', '', 0);
 
 #
@@ -88,7 +88,6 @@ INSERT INTO `oxactions2article` (`OXID`, `OXSHOPID`, `OXACTIONID`, `OXARTID`, `O
 ('a57e08935cd79c71f23b18a531890427', 'oxbaseshop', 'oxstart', '058de8224773a1d5fd54d523f0c823e0', 1),
 ('79042e787800a8465.75238508', 'oxbaseshop', 'oxbargain', '85b42c94a32b3fdd2.66642220', 0),
 ('b568de76c34bafb4b881b4774ea00f0e', 'oxbaseshop', 'oxnewest', 'b56597806428de2f58b1c6c7d3e0e093', 6),
-('9f542c5221ba79456.89971266', 'oxbaseshop', 'oxfirststart', '1964', 0),
 ('95842e9fde5c6f051.82672143', 'oxbaseshop', 'oxnewest', '1952', 3),
 ('95842e9fdde94e653.04821580', 'oxbaseshop', 'oxnewest', 'be642cada8422f150.29332483', 2),
 ('95842e9fdd03b5296.91384984', 'oxbaseshop', 'oxnewest', 'd8842e3cb356356f4.93820547', 0),
@@ -102,7 +101,6 @@ INSERT INTO `oxactions2article` (`OXID`, `OXSHOPID`, `OXACTIONID`, `OXARTID`, `O
 ('79042e78791e8ef10.24050762', 'oxbaseshop', 'oxbargain', 'd8842e3cbf9290351.59301740', 0),
 ('d0c10b636f2303d6c422a2896464171a', 'oxbaseshop', 'oxcatoffer', 'ed6573c0259d6a6fb641d106dcb2faec', 2),
 ('a57e05c9d11ea550a21c624482c6d095', 'oxbaseshop', 'oxstart', 'ed6573c0259d6a6fb641d106dcb2faec', 2),
-('c39826db23c8154e06d82dd8954a677a', 'oxbaseshop', 'oxfirststart', 'f4fe052346b4ec271011e25c052682c5', 1),
 ('d0cd4788290e30acd0fcc32e510e41c1', 'oxbaseshop', 'oxcatoffer', 'ed6a4182ae58874e4fdaa4775566af6c', 3),
 ('b56b73a47578b357a761f696251ceb7d', 'oxbaseshop', 'oxnewest', 'b563ab240dc19b89fc0349866b2be9c0', 7),
 ('c39e651303c494508b82463f638d2cd0', 'oxbaseshop', 'oxtopstart', 'dc5ffdf380e15674b56dd562a7cb6aec', 1),

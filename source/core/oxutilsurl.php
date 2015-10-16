@@ -1,25 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   core
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
- * @version   SVN: $Id: oxutils.php 23456 2009-10-21 14:49:35Z sarunas $
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
@@ -172,26 +170,30 @@ class oxUtilsUrl extends oxSuperCfg
      *
      * @param string $sUrl       url to append
      * @param array  $aAddParams parameters to append
+     * @param bool   $blFinalUrl final url
      *
      * @return string
      */
-    public function appendUrl( $sUrl, $aAddParams )
+    public function appendUrl($sUrl, $aAddParams, $blFinalUrl = false)
     {
         $oStr = getStr();
-        $sSep = '&amp;';
-        if ( $oStr->strpos( $sUrl, '?' ) === false ) {
-            $sSep = '?';
-        }
 
-        if ( count( $aAddParams ) ) {
+        $sSeparator = $this->_getUrlParametersSeparator($sUrl);
+
+        if (is_array($aAddParams)) {
             foreach ( $aAddParams as $sName => $sValue ) {
                 if ( isset( $sValue ) && !$oStr->preg_match("/\?(.*&(amp;)?)?".preg_quote( $sName )."=/", $sUrl ) ) {
-                    $sUrl .= $sSep . $sName . "=" . $sValue;
-                    $sSep = '&amp;';
+                    $sUrl .= $sSeparator . $sName . "=" . $sValue;
+                    $sSeparator = '&amp;';
                 }
             }
         }
-        return $sUrl ? $sUrl.$sSep : '';
+
+        if ($sUrl && !$blFinalUrl) {
+            $sUrl .= $sSeparator;
+    }
+
+        return $sUrl;
     }
 
     /**
@@ -216,105 +218,88 @@ class oxUtilsUrl extends oxSuperCfg
         return trim( $sUrl, "?" );
     }
 
+
     /**
-     * Performs base url processing - adds required parameters to given url
+     * Adds shop host if url does not start with it.
      *
-     * @param string $sUrl       url to process
-     * @param bool   $blFinalUrl should url be finalized or should it end with ? or &amp; (default true)
-     * @param array  $aParams    additional parameters (default null)
-     * @param int    $iLang      url target language (default null)
+     * @param string $sUrl
      *
      * @return string
      */
-    public function processUrl( $sUrl, $blFinalUrl = true, $aParams = null, $iLang = null )
+    public function addShopHost($sUrl)
+    {
+        if (!preg_match("#^https?://#i", $sUrl)) {
+            $sShopUrl = $this->getConfig()->getSslShopUrl();
+            $sUrl = $sShopUrl . $sUrl;
+        }
+
+        return $sUrl;
+    }
+
+    /**
+     * Performs base url processing - adds required parameters to given url.
+     *
+     * @param string $sUrl       url to process.
+     * @param bool   $blFinalUrl should url be finalized or should it end with ? or &amp; (default true).
+     * @param array  $aParams    additional parameters (default null).
+     * @param int    $iLang      url target language (default null).
+     *
+     * @return string
+     */
+    public function processUrl($sUrl, $blFinalUrl = true, $aParams = null, $iLang = null)
+    {
+        $sUrl = $this->appendUrl($sUrl, $aParams, $blFinalUrl);
+
+        if ($this->isCurrentShopHost($sUrl)) {
+            $sUrl = $this->processShopUrl($sUrl, $blFinalUrl, $iLang);
+            }
+
+        return $sUrl;
+        }
+
+    /**
+     * Adds additional shop url parameters, session id, language id when needed.
+     *
+     * @param string $sUrl       url to process.
+     * @param bool   $blFinalUrl should url be finalized or should it end with ? or &amp;.
+     * @param int    $iLang      url target language.
+     *
+     * @return string
+     */
+    public function processShopUrl($sUrl, $blFinalUrl = true, $iLang = null)
     {
         $aAddParams = $this->getAddUrlParams();
-        if ( is_array($aParams) && count( $aParams ) ) {
-            $aAddParams = array_merge( $aAddParams, $aParams );
-        }
 
-        $ret = oxRegistry::getSession()->processUrl(
-            oxRegistry::getLang()->processUrl(
-                $this->appendUrl(
-                    $sUrl,
-                    $aAddParams
-                ),
-                $iLang
-            )
-        );
+        $sUrl = $this->appendUrl($sUrl, $aAddParams, $blFinalUrl);
+        $sUrl = oxRegistry::getLang()->processUrl($sUrl, $iLang);
+        $sUrl = oxRegistry::getSession()->processUrl($sUrl);
 
         if ($blFinalUrl) {
-            $ret = getStr()->preg_replace('/(\?|&(amp;)?)$/', '', $ret);
-        }
-        return $ret;
-    }
-
-    /**
-     * Extracts host from given url and appends $aHosts with it
-     *
-     * @param string $sUrl    url to extract
-     * @param array  &$aHosts hosts array
-     *
-     * @return null
-     */
-    protected function _addHost( $sUrl, & $aHosts )
-    {
-        if ( $sUrl && ( $sHost = @parse_url( $sUrl, PHP_URL_HOST ) ) ) {
-            if ( !in_array( $sHost, $aHosts ) ) {
-                $aHosts[] = $sHost;
-            }
-        }
-    }
-
-    /**
-     * Collects and returns current shop hosts array
-     *
-     * @return array
-     */
-    protected function _getHosts()
-    {
-        if ( $this->_aHosts === null ) {
-            $this->_aHosts = array();
-            $oConfig = $this->getConfig();
-
-            // mall (ssl) url
-            $this->_addHost( $oConfig->getConfigParam( "sMallShopURL" ), $this->_aHosts );
-            $this->_addHost( $oConfig->getConfigParam( "sMallSSLShopURL" ), $this->_aHosts );
-
-            // language url
-            $this->_addHost( $oConfig->getConfigParam( 'aLanguageURLs' ), $this->_aHosts );
-            $this->_addHost( $oConfig->getConfigParam( 'aLanguageSSLURLs' ), $this->_aHosts );
-
-            if ( !count( $aHosts ) && !$oConfig->mustAddShopIdToRequest() ) {
-                // current url
-                $this->_addHost( $oConfig->getConfigParam( "sShopURL" ), $this->_aHosts );
-                $this->_addHost( $oConfig->getConfigParam( "sSSLShopURL" ), $this->_aHosts );
+            $sUrl = getStr()->preg_replace('/(\?|&(amp;)?)$/', '', $sUrl);
             }
 
-            if ( $this->isAdmin() ) {
-                $this->_addHost( $oConfig->getConfigParam( "sAdminSSLURL" ), $this->_aHosts );
+        return $sUrl;
             }
-        }
-
-        return $this->_aHosts;
-    }
 
     /**
      * Compares current URL to supplied string
      *
-     * @param string $sUrl URL
+     * @param string $sUrl
      *
-     * @return bool true if $sURL is equal to current page URL
+     * @return bool true if $sUrl is equal to current page URL.
      */
     public function isCurrentShopHost( $sUrl )
     {
         $blCurrent = false;
-        if ( $sUrl ) {
-            // host of given url
-            $sUrlHost = @parse_url( $sUrl, PHP_URL_HOST );
-
-            // configured hosts
+        $sUrlHost = @parse_url($sUrl, PHP_URL_HOST);
+        // checks if it is relative url.
+        if (is_null($sUrlHost)) {
+            $blCurrent = true;
+        } else {
             $aHosts = $this->_getHosts();
+            if (empty($aHosts)) {
+                $aHosts = array($this->_getShopHostName());
+            }
 
             foreach ( $aHosts as $sHost ) {
                 if ( $sHost === $sUrlHost ) {
@@ -328,9 +313,9 @@ class oxUtilsUrl extends oxSuperCfg
     }
 
     /**
-     * Seo url processor: adds various needed parameters, like currency, shop id
+     * Seo url processor: adds various needed parameters, like currency, shop id.
      *
-     * @param string $sUrl url to process
+     * @param string $sUrl url to process.
      *
      * @return string
      */
@@ -411,7 +396,7 @@ class oxUtilsUrl extends oxSuperCfg
      *
      * @return string
      */
-    function getCurrentUrl()
+    public function getCurrentUrl()
     {
         $oUtilsServer = oxRegistry::get( "oxUtilsServer" );
 
@@ -438,7 +423,7 @@ class oxUtilsUrl extends oxSuperCfg
      * Takes & and &amp; as delimiters
      * Returns associative array with parameters
      *
-     * @param $sValue string
+     * @param string $sValue String
      *
      * @return array
      */
@@ -456,5 +441,107 @@ class oxUtilsUrl extends oxSuperCfg
         }
 
         return $aParams;
+    }
+
+    /**
+     * Extracts host from given url and appends $aHosts with it.
+     *
+     * @param string $sUrl    url to extract
+     * @param array  &$aHosts hosts array
+     */
+    protected function _addHost($sUrl, & $aHosts)
+    {
+        if ($sUrl && ($sHost = @parse_url($sUrl, PHP_URL_HOST))) {
+            if (!in_array($sHost, $aHosts)) {
+                $aHosts[] = $sHost;
+            }
+        }
+    }
+
+    /**
+     * Appends language urls to $aHosts.
+     *
+     * @param array $aLanguageUrls array of language urls to extract
+     * @param array &$aHosts       hosts array
+     */
+    protected function _addLanguageHost($aLanguageUrls, & $aHosts)
+    {
+        $iLanguageId = oxRegistry::getLang()->getBaseLanguage();
+
+        if (isset($aLanguageUrls[$iLanguageId])) {
+            $this->_addHost($aLanguageUrls[$iLanguageId], $aHosts);
+        }
+    }
+
+    /**
+     * Collects and returns current shop hosts array.
+     *
+     * @return array
+     */
+    protected function _getHosts()
+    {
+        if ($this->_aHosts === null) {
+            $this->_aHosts = array();
+            $oConfig = $this->getConfig();
+
+            $this->_addMallHosts($this->_aHosts);
+
+            // language url
+            $this->_addLanguageHost($oConfig->getConfigParam('aLanguageURLs'), $this->_aHosts);
+            $this->_addLanguageHost($oConfig->getConfigParam('aLanguageSSLURLs'), $this->_aHosts);
+
+            // current url
+            $this->_addHost($oConfig->getConfigParam("sShopURL"), $this->_aHosts);
+            $this->_addHost($oConfig->getConfigParam("sSSLShopURL"), $this->_aHosts);
+
+            if ($this->isAdmin()) {
+                $this->_addHost($oConfig->getConfigParam("sAdminSSLURL"), $this->_aHosts);
+            }
+        }
+
+        return $this->_aHosts;
+    }
+
+    /**
+     * Appends shop mall urls to $aHosts.
+     *
+     * @param array &$aHosts hosts array
+     */
+    protected function _addMallHosts(& $aHosts)
+    {
+    }
+
+    /**
+     * Returns url separator (?,&amp;) for adding new parameters.
+     *
+     * @param string $sUrl
+     *
+     * @return string
+     */
+    private function _getUrlParametersSeparator($sUrl)
+    {
+        /** @var oxStrRegular $oStr */
+        $oStr = getStr();
+
+        $sSeparator = '';
+        if ($oStr->strpos($sUrl, '?') === false) {
+            $sSeparator = '?';
+        } else {
+            if ($sSeparator === '' && !$oStr->preg_match("/(\?|&(amp;)?)$/", $sUrl)) {
+                $sSeparator = '&amp;';
+            }
+        }
+
+        return $sSeparator;
+    }
+
+    /**
+     * Returns shop host name.
+     *
+     * @return string
+     */
+    private function _getShopHostName()
+    {
+        return @parse_url($this->getConfig()->getShopUrl(), PHP_URL_HOST);
     }
 }

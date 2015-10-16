@@ -1,24 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   lang
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 $sLangName  = 'Deutsch';
@@ -346,7 +345,7 @@ $aLang = array(
 'ARTICLE_ATTRIBUTE_NOATTRIBUTE'                            => 'Nicht ben. Attribute',
 'ARTICLE_ATTRIBUTE_SELECTONEATTR'                          => 'Bitte wählen Sie ein Attribut:',
 'ARTICLE_ATTRIBUTE_SAVE'                                   => 'Speichern',
-'ARTICLE_ATTRIBUTE_OPENINNEWWINDOW'                        => '',
+'ARTICLE_ATTRIBUTE_OPENINNEWWINDOW'                        => 'Neues Attribut in neuem Fenster öffnen',
 'ARTICLE_ATTRIBUTE_NOSELLIST'                              => 'Nicht ben. Ausw.listen',
 'ARTICLE_ATTRIBUTE_ITEMSATTRIBUTE'                         => 'Artikel hat diese Attrib.',
 'ARTICLE_ATTRIBUTE_ITEMSSELLIST'                           => 'Artikel hat diese Ausw.listen',
@@ -381,6 +380,7 @@ $aLang = array(
 'ARTICLE_EXTEND_QUESTIONEMAIL'                             => 'Alt. Anspr.partn.',
 'ARTICLE_EXTEND_ISSEARCH'                                  => 'Kann gesucht werden',
 'ARTICLE_EXTEND_ISCONFIGURABLE'                            => 'Artikel ist individualisierbar',
+'ARTICLE_EXTEND_SHOWCUSTOMAGREEMENT'                       => 'AGB bestätigen',
 'ARTICLE_EXTEND_NONMATERIAL'                               => 'Immaterieller Artikel',
 'ARTICLE_EXTEND_FREESHIPPING'                              => 'Versandkostenfrei',
 'ARTICLE_EXTEND_BLFIXEDPRICE'                              => 'Preisalarm deaktivieren',
@@ -843,7 +843,7 @@ $aLang = array(
 'NEWS_MAIN_NOTSHOWFORGROUP'                                => 'Nicht sichtbar für Benutzergruppe',
 'NAVIGATION_FAVORITES'                                     => 'Favoriten',
 'NAVIGATION_FAVORITES_EDIT'                                => '[ändern]',
-'FAVORITES_DESC'                                           => '',
+'FAVORITES_DESC'                                           => 'Beschreibung der Favoriten ...',
 'NAVIGATION_HISTORY'                                       => 'History',
 'NAVIGATION_SYSREQ_MESSAGE'                                => "Die Systemgesundheit dieses Shops ist gefährdet. Möglicherweise verhält sich Ihr OXID eShop in einigen Bereichen unerwartet. Bitte stellen Sie sicher, dass die Servereinstellungen korrekt vorgenommen werden. Unterstützung finden Sie in der ",
 'NAVIGATION_SYSREQ_MESSAGE2'                               => "Systemgesundheitsprüfung.",
@@ -1160,6 +1160,7 @@ $aLang = array(
 'SHOP_CONFIG_ALLOWUNEVENAMOUNTS'                           => 'Nicht ganzzahlige Eingaben bei Artikelmengen erlauben (z.B. 1,5)',
 'SHOP_CONFIG_BIDIRECTCROSS'                                => 'Bidirektionales Crossselling aktivieren',
 'SHOP_CONFIG_CONFIRMAGB'                                   => 'Kunden müssen die AGB bestätigen, um bestellen zu können',
+'SHOP_CONFIG_ENABLE_INTANGIBLE_PRODUCTS_AGREEMENT'         => 'Benutzer müssen die AGB für immaterielle und Downloadartikel im Check-out bestätigen',
 'SHOP_CONFIG_SHOWORDERBUTTONONTHETOP'                      => 'Im 4. Bestellschritt einen zusätzlichen "Zahlungspflichtig bestellen" Button oben anzeigen (wenn die Einstellung nicht aktiv ist, wird nur der "Zahlungspflichtig bestellen" Button weiter unten angezeigt).',
 'SHOP_CONFIG_CALCULATEVATFORDELIVERY'                      => 'Im Warenkorb und in der Rechnung die Versandkosten als Nettobetrag und Mehrwertsteuer anstatt als Bruttobetrag anzeigen',
 'SHOP_CONFIG_CALCDELVATONTOP'                              => 'Versandkosten als Nettopreise eingeben (zuzüglich MwSt.)',
@@ -1249,6 +1250,7 @@ $aLang = array(
 'SHOP_CONFIG_SHOWTAGS'                                     => 'Tags im eShop anzeigen',
 'SHOP_CONFIG_DOWNLOADS'                                    => 'Download-Artikel erlauben',
 'SHOP_CONFIG_DOWNLOADS_PATH'                               => 'Pfad zu den Dateien für Download-Artikel',
+'SHOP_CONFIG_DEBIT_OLD_BANK_INFORMATION_NOT_ALLOWED'       => 'Ausschließlich IBAN/BIC verwenden',
 'SHOP_SYSTEM_ATTRIBUTESPERCENT'                            => 'Prozentsatz gleicher Attribute, damit Artikel ähnlich sind',
 'SHOP_SYSTEM_DEFAULTIMAGEQUALITY'                          => 'Bildqualität - von 0 (schlechteste Qualität, kleine Dateigröße) bis 100 (beste Qualität, große Dateigröße)',
 'SHOP_SYSTEM_DENIEDDYNGROUPS'                              => 'Benutzergruppen, die von dynamischer Benutzergruppen-Zuordnung via URL-Parameter "dgr" ausgeschlossen sind',
@@ -1502,6 +1504,7 @@ $aLang = array(
 'USERGROUP_LIST_MENUSUBITEM'                               => 'Benutzergruppen',
 'USERGROUP_MAIN_MEMBERINGROUP'                             => 'Mitglieder der Benutzergruppe',
 'USERGROUP_MAIN_ALLMEMBERS'                                => 'Alle Benutzer',
+'USERGROUP_ID'                                             => 'Gruppen-ID',
 'VENDOR_LIST_MENUITEM'                                     => 'Stammdaten',
 'VENDOR_LIST_MENUSUBITEM'                                  => 'Lieferanten',
 'VENDOR_LIST_TITLE'                                        => '[OXID Lieferantenverwaltung]',
@@ -1852,6 +1855,14 @@ $aLang = array(
 'serial_added'                                             => 'Neuer Lizenzschlüssel wurde aktiviert',
 'serial_updated'                                           => 'Lizenzschlüssel wurde aktualisiert',
 
+// Shop licensing problems
+'SHOP_LICENSE_ERROR_GRACE_EXPIRED'                         => 'Der Lizenzschlüssel Ihres OXID eShop ist endgültig abgelaufen. Bitte kontaktieren Sie den Technischen Support.',
+'SHOP_LICENSE_ERROR_GRACE_WILL_EXPIRE'                     => 'Der Lizenzschlüssel Ihres OXID eShop ist abgelaufen. Dieser OXID eShop wird innerhalb der nächsten 24 Stunden offline gehen. Bitte geben Sie einen gültigen Lizenzschlüssel ein oder wenden Sie sich an den technischen Support.',
+'SHOP_LICENSE_ERROR_shop_unlicensed'                       => 'Es ist ein Problem mit dem Lizenzschlüssel Ihres OXID eShop aufgetreten. Aus diesem Grund wurde ein stiller Countdown von 7 Tagen gestartet. Nach Ablauf der Frist wird der OXID eShop offline gehen. Bitte geben Sie den gültigen Lizenzschlüssel erneut ein oder kontaktieren Sie den Technischen Support!',
+'SHOP_LICENSE_ERROR_serial_expired'                        => 'Der Lizenzschlüssel Ihres OXID eShop ist abgelaufen. Aus diesem Grund wurde ein stiller Countdown von 7 Tagen gestartet. Nach Ablauf der Frist wird der OXID eShop offline gehen. Bitte geben Sie einen gültigen Lizenzschlüssel ein oder kontaktieren Sie den Technischen Support!',
+'SHOP_LICENSE_ERROR_incorrect_mandate_amount'              => 'Die Anzahl der lizensierten Subshops wurde überschritten. Aus diesem Grund wurde ein stiller Countdown von 7 Tagen gestartet. Nach Ablauf der Frist wird der OXID eShop offline gehen. Bitte geben Sie einen gültigen Lizenzschlüssel ein oder kontaktieren Sie den Technischen Support!',
+'SHOP_LICENSE_ERROR_INFORMATION'                           => 'OXID eShop Lizenzinformation',
+
 'SHOP_OPTIONS_GROUP_GLOBAL'                                => 'Global',
 'SHOP_OPTIONS_GROUP_SEARCH'                                => 'Suche',
 'SHOP_OPTIONS_GROUP_STOCK'                                 => 'Lager',
@@ -1868,6 +1879,7 @@ $aLang = array(
 'SHOP_OPTIONS_GROUP_INVITATIONS'                           => 'Einladungen',
 'SHOP_OPTIONS_GROUP_FACEBOOK'                              => 'Facebook',
 'SHOP_OPTIONS_GROUP_SHOP_DOWNLOADABLEARTICLES'             => 'Download-Artikel',
+'SHOP_OPTIONS_BANK_INFORMATION'                            => 'Bankinformationen (SEPA)',
 
 
 
@@ -2072,10 +2084,10 @@ $aLang = array(
 'OXDIAG_COLLECT_HEALTH'				=>	'Systemgesundheit abfragen',
 'OXDIAG_COLLECT_PHP'				=>	'PHP-Konfiguration (Auswahl) abfragen',
 'OXDIAG_COLLECT_SERVER'				=>	'Serverinformationen abfragen (sofern m&ouml;glich)',
-'OXDIAG_COLLECT_CHKVERS'			=>	'<i>Versionsprüfung</i> ausf&uuml;hren und abfragen',
+'OXDIAG_COLLECT_CHKVERS'            =>    '<i>Versionsprüfung</i> ausf&uuml;hren und abfragen',
 'OXDIAG_COLLECT_CHKVERS_DURATION'	=>	'Dadurch kann die Ausf&uuml;hrung dieses Moduls erheblich l&auml;nger dauern oder fehlschlagen.',
-'OXDIAG_COLL_CHKV_NOTINST'			=>	'<i>Versionsprüfung</i> ist auf diesem System nicht vorhanden. Sie k&ouml;nnen die <a href="http://exchange.oxid-esales.com/de/OXID/Weitere-OXID-Extensions/Oxchkversion-CE-3-1-0-Stable-CE-4-0-x-4-7-x.html">Datei aus OXID eXchange herunterladen</a> und im Wurzelverzeichnis des Shops ablegen.',
-'OXDIAG_COLL_CHKV_FILE_GET'			=>	'Die Funktion <i>file_get_contents</i> ist nicht verf&uuml;gbar, deshalb kann <i>Versionsprüfung</i> nicht abgefragt werden.',
+'OXDIAG_COLL_CHKV_NOTINST'          =>    '<i>Versionsprüfung</i> ist auf diesem System nicht vorhanden. Sie k&ouml;nnen die <a href="http://exchange.oxid-esales.com/de/OXID/Weitere-OXID-Extensions/Oxchkversion-CE-3-1-0-Stable-CE-4-0-x-4-7-x.html">Datei aus OXID eXchange herunterladen</a> und im Wurzelverzeichnis des Shops ablegen.',
+'OXDIAG_COLL_CHKV_FILE_GET'         =>    'Die Funktion <i>file_get_contents</i> ist nicht verf&uuml;gbar, deshalb kann <i>Versionsprüfung</i> nicht abgefragt werden.',
 'OXDIAG_STORE_ANALYSIS'				=>	'Auswertung speichern',
 'OXDIAG_COLLECT_START'				=>	'Analyse starten!',
 
@@ -2125,7 +2137,8 @@ $aLang = array(
 
 'OMVN_ERROR_REQUEST_FAILED'                                => 'Dienst nicht verfügbar. Bitte versuchen Sie es später noch einmal. Falls das Problem weiterhin bestehen sollte, überprüfen Sie bitte, dass Ihr Shop ausgehende Verbindungen aufbauen kann.',
 
-'VERSION_UPDATE_LINK'                                         => 'http://www.oxid-esales.com/de/support-services/dokumentation-und-hilfe/oxid-eshop/installation/oxid-eshop-aktualisieren/update-vorbereiten.html',
+'VERSION_UPDATE_LINK'                                      => 'http://www.oxid-esales.com/de/support-services/dokumentation-und-hilfe/oxid-eshop/installation/oxid-eshop-aktualisieren/update-vorbereiten.html',
+'MESSAGE_FOR_NEWLY_CREATED_USER_GROUPS'                    => 'Falls ein Nutzer den Shop mittels einer bestimmten URL erreicht, welche die Gruppen-ID einer Benutzer-Gruppe beinhaltet, so wird er automatisch der Benutzergruppe zugeordnet, deren ID mit der in der URL Enthaltenen korrespondiert.<br> Sollten Sie dieses Verhalten deaktivieren wollen, navigieren Sie bitte zu "Stammdaten->Grundeinstellungen->System->Weitere Einstellungen" und fügen Sie die ID der Benutzergruppe der Liste "Benutzergruppen, für welche die Dynamische Nutzer Gruppen Zuordnung durch DGR URL Parameter nicht erlaubt sind" hinzu.'
 );
 
 /*

@@ -72,8 +72,6 @@ class Integration_Price_PriceTest extends OxidTestCase
         if ( $aTestCase['skipped'] == 1 ) {
             $this->markTestSkipped( "testcase is skipped" );
         }
-        // getting config
-        $oConfig = oxRegistry::getConfig();
 
         // gather data from test case
         $aExpected  = $aTestCase['expected'];
@@ -97,6 +95,8 @@ class Integration_Price_PriceTest extends OxidTestCase
         // setup options
         $oConstruct->setOptions( $aTestCase['options'] );
 
+        // create categories
+        $oConstruct->setCategories( $aTestCase['categories'] );
 
         // create articles
         $aArts = $oConstruct->getArticles( $aTestCase['articles'] );

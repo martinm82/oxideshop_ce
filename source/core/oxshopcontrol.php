@@ -1,24 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   views
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
@@ -116,72 +115,22 @@ class oxShopControl extends oxSuperCfg
     {
         //sets default exception handler
         $this->_setDefaultExceptionHandler();
-
-        $myConfig = $this->getConfig();
-
+        try {
         //perform tasks once per session
         $this->_runOnce();
-
-        $sClass    = ( isset( $sClass ) ) ? $sClass : oxConfig::getParameter( 'cl' );
-        $sFunction = ( isset( $sFunction ) ) ? $sFunction : oxConfig::getParameter( 'fnc' );
-
-        if ( !$sClass ) {
-
-            if ( !$this->isAdmin() ) {
-
-                // first start of the shop
-                // check whether we have to display mall start screen or not
-                if ( $myConfig->isMall() ) {
-
-                    $iShopCount = oxDb::getDb()->getOne( 'select count(*) from oxshops where oxactive = 1' );
-
-                    $sMallShopURL = $myConfig->getConfigParam( 'sMallShopURL' );
-                    if ( $iShopCount && $iShopCount > 1 && $myConfig->getConfigParam( 'iMallMode' ) != 0 && !$sMallShopURL ) {
-                        // no class specified so we need to change back to baseshop
-                        $sClass = 'mallstart';
-                    }
-                }
-
-                if ( !$sClass ) {
-                    $sClass = 'start';
-                }
-            } else {
-                $sClass = 'login';
-            }
-
-            oxSession::setVar( 'cl', $sClass );
-        }
-
-        try {
+            $sFunction = ( isset( $sFunction ) ) ? $sFunction : oxRegistry::getConfig()->getRequestParameter( 'fnc' );
+            $sClass = $this->_getControllerToLoad( $sClass );
             $this->_process( $sClass, $sFunction, $aParams, $aViewsChain );
         } catch( oxSystemComponentException $oEx ) {
-            //possible reason: class does not exist etc. --> just redirect to start page
-            if ( $this->_isDebugMode() ) {
-                oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
-                $this->_process( 'exceptionError', 'displayExceptionError' );
-            }
-            $oEx->debugOut();
-
-            if ( !$myConfig->getConfigParam( 'iDebug' ) ) {
-                oxRegistry::getUtils()->redirect( $myConfig->getShopHomeUrl() .'cl=start', true, 302 );
-            }
+            $this->_handleSystemException( $oEx );
         } catch ( oxCookieException $oEx ) {
-            // redirect to start page and display the error
-            if ( $this->_isDebugMode() ) {
-                oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
+            $this->_handleCookieException( $oEx );
             }
-            oxRegistry::getUtils()->redirect( $myConfig->getShopHomeUrl() .'cl=start', true, 302 );
+        catch ( oxConnectionException $oEx) {
+            $this->_handleDbConnectionException( $oEx );
         }
-
         catch ( oxException $oEx) {
-            //catching other not cought exceptions
-            if ( $this->_isDebugMode() ) {
-                oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
-                $this->_process( 'exceptionError', 'displayExceptionError' );
-            }
-
-            // log the exception
-            $oEx->debugOut();
+            $this->_handleBaseException( $oEx );
         }
     }
 
@@ -384,7 +333,12 @@ class oxShopControl extends oxSuperCfg
         $sOutput      = null;
         $blIsCached   = false;
 
+        // Initialize view object and it's components.
         $oViewObject = $this->_initializeViewObject($sClass, $sFunction, $aParams, $aViewsChain);
+
+        if ( !$this->_canExecuteFunction( $oViewObject, $oViewObject->getFncName() ) ) {
+            throw oxNew( 'oxSystemComponentException', 'Non public method cannot be accessed' );
+        }
 
         // executing user defined function
         $oViewObject->executeFunction( $oViewObject->getFncName() );
@@ -404,7 +358,6 @@ class oxShopControl extends oxSuperCfg
             $oOutput->setOutputFormat(oxOutput::OUTPUT_FORMAT_JSON);
             $oOutput->output('errors', $this->_getFormattedErrors( $oViewObject->getClassName() ));
         }
-
 
        $oOutput->sendHeaders();
 
@@ -451,6 +404,26 @@ class oxShopControl extends oxSuperCfg
         $oViewObject->init();
 
         return $oViewObject;
+    }
+
+    /**
+     * Check if method can be executed.
+     *
+     * @param object $oClass object to check if its method can be executed.
+     * @param string $sFunction method to check if it can be executed.
+     * @return bool
+     */
+    protected function _canExecuteFunction( $oClass, $sFunction )
+    {
+        $blCanExecute = true;
+
+        if ( method_exists( $oClass, $sFunction ) ) {
+            $oReflectionMethod = new ReflectionMethod( $oClass, $sFunction );
+            if ( !$oReflectionMethod->isPublic() ) {
+                $blCanExecute = false;
+            }
+        }
+        return $blCanExecute;
     }
 
 
@@ -648,4 +621,118 @@ class oxShopControl extends oxSuperCfg
         return false;
     }
 
+
+    /**
+     * Shows exceptionError page.
+     * possible reason: class does not exist etc. --> just redirect to start page.
+     *
+     * @param $oEx
+     */
+    protected function _handleSystemException( $oEx )
+    {
+        //possible reason: class does not exist etc. --> just redirect to start page
+        if ( $this->_isDebugMode() ) {
+            oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
+            $this->_process( 'exceptionError', 'displayExceptionError' );
+        }
+        $oEx->debugOut();
+
+        $myConfig = $this->getConfig();
+        if ( !$myConfig->getConfigParam( 'iDebug' ) ) {
+            oxRegistry::getUtils()->redirect( $myConfig->getShopHomeUrl() .'cl=start', true, 302 );
+        }
+    }
+
+    /**
+     * Redirect to start page, in debug mode shows error message.
+     *
+     * @param $oEx
+     */
+    protected function _handleCookieException( $oEx )
+    {
+        if ( $this->_isDebugMode() ) {
+            oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
+        }
+        oxRegistry::getUtils()->redirect( $this->getConfig()->getShopHomeUrl() .'cl=start', true, 302 );
+    }
+
+    /**
+     * R&R handling -> redirect to error msg, also, can call _process again, specifying error handler view class.
+     *
+     * @param $oEx
+     */
+    protected function _handleAccessRightsException( $oEx )
+    {
+        oxRegistry::getUtils()->redirect( $this->getConfig()->getShopHomeUrl() .'cl=content&tpl=err_accessdenied.tpl', true, 302 );
+    }
+
+    /**
+     * Shows exception message if debug mode is enabled, redirects otherwise.
+     *
+     * @param oxConnectionException $oEx message to show on exit
+     */
+    protected function _handleDbConnectionException( $oEx )
+    {
+        $oEx->debugOut();
+        if ( $this->_isDebugMode() ) {
+            oxUtils::getInstance()->showMessageAndExit( $oEx->getString() );
+        } else {
+            oxRegistry::getUtils()->redirectOffline();
+        }
+    }
+
+    /**
+     * Catching other not cought exceptions.
+     *
+     * @param oxException $oEx
+     */
+    protected function _handleBaseException( $oEx )
+    {
+        $oEx->debugOut();
+        if ( $this->_isDebugMode() ) {
+            oxRegistry::get("oxUtilsView")->addErrorToDisplay( $oEx );
+            $this->_process( 'exceptionError', 'displayExceptionError' );
+        }
+    }
+
+    /**
+     * Returns controller class which should be loaded.
+     *
+     * @param string $sClass
+     * 
+     * @return string
+     */
+    protected function _getControllerToLoad( $sClass = null )
+    {
+        $oConfig = $this->getConfig();
+        $sClass = ( isset( $sClass ) ) ? $sClass : oxRegistry::getConfig()->getRequestParameter( 'cl' );
+        if ( !$sClass ) {
+
+            if ( !$this->isAdmin() ) {
+
+                // first start of the shop
+                // check wether we have to display mall startscreen or not
+                if ( $oConfig->isMall() ) {
+
+                    $iShopCount = oxDb::getDb()->getOne( 'select count(*) from oxshops where oxactive = 1' );
+
+                    $sMallShopURL = $oConfig->getConfigParam( 'sMallShopURL' );
+                    if ( $iShopCount && $iShopCount > 1 && $oConfig->getConfigParam( 'iMallMode' ) != 0 && !$sMallShopURL ) {
+                        // no class specified so we need to change back to baseshop
+                        $sClass = 'mallstart';
+                    }
+                }
+
+                if ( !$sClass ) {
+                    $sClass = 'start';
+                }
+            } else {
+                $sClass = 'login';
+            }
+
+            oxRegistry::getSession()->setVariable( 'cl', $sClass );
+        }
+
+        return $sClass;
+    }
 }

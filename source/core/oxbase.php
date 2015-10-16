@@ -1,24 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   core
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
@@ -142,6 +141,13 @@ class oxBase extends oxSuperCfg
      * @var bool
      */
     protected $_blIsSeoObject = false;
+
+    /**
+     * Flag allowing seo update for certain objects
+     *
+     * @var bool
+     */
+    protected $_blUpdateSeo = true;
 
     /**
      * Read only for object
@@ -386,6 +392,49 @@ class oxBase extends oxSuperCfg
     }
 
     /**
+     * Returns update seo flag
+     *
+     * @return boolean
+     */
+    public function getUpdateSeo()
+    {
+        return $this->_blUpdateSeo;
+    }
+
+    /**
+     * Sets update seo flag
+     *
+     * @param boolean $blUpdateSeo
+     */
+    public function setUpdateSeo($blUpdateSeo)
+    {
+        $this->_blUpdateSeo = $blUpdateSeo;
+    }
+
+    /**
+     * Checks whether certain field has changed, and sets update seo flag if needed.
+     * It can only set the value to false, so it allows for multiple calls to the method,
+     * and if atleast one requires seo update, other checks won't override that.
+     *
+     * @param string $sField Field name that will be checked
+     */
+    protected function _setUpdateSeoOnFieldChange($sField)
+    {
+        if ($this->getId() && in_array($sField, $this->getFieldNames())) {
+            $oDb = oxDb::getDb();
+            $sTableName = $this->getCoreTableName();
+            $sQuotedOxid = $oDb->quote($this->getId());
+            $sTitle = $oDb->getOne("select `{$sField}` from `{$sTableName}` where `oxid` = {$sQuotedOxid}");
+            $sFieldValue = "{$sTableName}__{$sField}";
+            $sCurrentTitle = $this->$sFieldValue->value;
+
+            if ($sTitle == $sCurrentTitle) {
+                $this->setUpdateSeo(false);
+            }
+        }
+    }
+
+    /**
      * Sets the names to main and view tables, loads metadata of each table.
      *
      * @param string $sTableName       Name of DB object table
@@ -614,16 +663,12 @@ class oxBase extends oxSuperCfg
      */
     public function load( $sOXID )
     {
-        $blExistingOldForceCoreTable = $this->_blForceCoreTableUsage;
-
-        $this->_blForceCoreTableUsage = true;
 
         //getting at least one field before lazy loading the object
         $this->_addField( 'oxid', 0 );
         $sSelect = $this->buildSelectString( array( $this->getViewName() . '.oxid' => $sOXID) );
         $this->_isLoaded = $this->assignRecord( $sSelect );
 
-        $this->_blForceCoreTableUsage = $blExistingOldForceCoreTable;
 
         return $this->_isLoaded;
     }

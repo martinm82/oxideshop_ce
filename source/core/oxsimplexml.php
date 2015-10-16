@@ -16,17 +16,15 @@
  * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   core
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
- * Simple XML handler
+ * The wrapper of simpleXML functions.
  */
-class oxSimpleXml {
-
-
+class oxSimpleXml
+{
     /**
      * Recursively adds $oInput object data to SimpleXMLElement structure
      *
@@ -38,7 +36,7 @@ class oxSimpleXml {
     protected function _addSimpleXmlElement($oXml, $oInput)
     {
         if (is_object( $oInput )) {
-        $aObjectVars = get_object_vars( $oInput );
+            $aObjectVars = get_object_vars( $oInput );
         } elseif (is_array($oInput) ) {
             $aObjectVars = $oInput;
         } else {
@@ -47,21 +45,18 @@ class oxSimpleXml {
 
         foreach ($aObjectVars as $sKey => $oVar) {
             if (is_object( $oVar ) ) {
-
                 $oChildNode = $oXml->addChild($sKey);
                 $this->_addSimpleXmlElement($oChildNode, $oVar);
-
             } elseif (is_array( $oVar) ) {
                 foreach ($oVar as $oSubValue) {
-
                     //this check for complex type is probably redundant, but I give up to solve it over single recursion call
                     //use existing Unit tests for refactoring
                     if (is_array($oSubValue) || is_object($oSubValue)) {
                         $oChildNode = $oXml->addChild($sKey);
                         $this->_addSimpleXmlElement($oChildNode, $oSubValue);
                     } else {
-                    $oXml->addChild($sKey, $oSubValue);
-                }
+                        $oXml->addChild($sKey, $oSubValue);
+                    }
                 }
             } else {
                 //assume $oVar is string

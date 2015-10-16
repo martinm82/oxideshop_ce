@@ -1,25 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   tests
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
- * @version   SVN: $Id$
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 
@@ -257,7 +255,7 @@ class Unit_Views_oxlocatorTest extends OxidTestCase
     public function testSetVendorLocatorData()
     {
         // seo off
-        modConfig::getInstance()->setConfigParam( 'blSeoMode', false );
+        $this->getConfig()->setConfigParam( 'blSeoMode', false );
         oxUtils::getInstance()->seoIsActive( true );
 
         $myConfig = oxConfig::getInstance();
@@ -282,7 +280,6 @@ class Unit_Views_oxlocatorTest extends OxidTestCase
         $oLocatorTarget->expects( $this->any() )->method( 'setCatTreePath' );
         $oLocatorTarget->expects( $this->any() )->method( 'getCatTreePath' );
         $oLocatorTarget->expects( $this->once() )->method( 'getActVendor' )->will( $this->returnValue( $oVendor ) );
-        $oLocatorTarget->expects( $this->once() )->method( 'getVendorTree' )->will( $this->returnValue( new oxvendorlist ) );
         $oLocatorTarget->expects( $this->once() )->method( 'showSorting' )->will( $this->returnValue( true ) );
         $oLocatorTarget->expects( $this->any() )->method( 'getLinkType' )->will( $this->returnValue( OXARTICLE_LINKTYPE_VENDOR ) );
 
@@ -326,7 +323,6 @@ class Unit_Views_oxlocatorTest extends OxidTestCase
         $oLocatorTarget->expects( $this->any() )->method( 'setCatTreePath' );
         $oLocatorTarget->expects( $this->any() )->method( 'getCatTreePath' );
         $oLocatorTarget->expects( $this->once() )->method( 'getActVendor' )->will( $this->returnValue( $oVendor ) );
-        $oLocatorTarget->expects( $this->once() )->method( 'getVendorTree' )->will( $this->returnValue( new oxvendorlist ) );
         $oLocatorTarget->expects( $this->once() )->method( 'showSorting' )->will( $this->returnValue( true ) );
         $oLocatorTarget->expects( $this->any() )->method( 'getLinkType' )->will( $this->returnValue( OXARTICLE_LINKTYPE_VENDOR ) );
 

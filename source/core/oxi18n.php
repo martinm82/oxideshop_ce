@@ -1,25 +1,23 @@
 <?php
 /**
- *    This file is part of OXID eShop Community Edition.
+ * This file is part of OXID eShop Community Edition.
  *
- *    OXID eShop Community Edition is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
+ * OXID eShop Community Edition is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    OXID eShop Community Edition is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * OXID eShop Community Edition is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @package   core
- * @copyright (C) OXID eSales AG 2003-2013
- * @version OXID eShop CE
- * @version   SVN: $Id$
+ * @copyright (C) OXID eSales AG 2003-2014
+ * @version   OXID eShop CE
  */
 
 /**
@@ -354,6 +352,20 @@ class oxI18n extends oxBase
     }
 
     /**
+     * Checks whether certain field has changed, and sets update seo flag if needed.
+     * It can only set the value to false, so it allows for multiple calls to the method,
+     * and if atleast one requires seo update, other checks won't override that.
+     * Will try to get multilang table name for relevant field check.
+     *
+     * @param string $sField Field name that will be checked
+     */
+    protected function _setUpdateSeoOnFieldChange($sField)
+    {
+        parent::_setUpdateSeoOnFieldChange($this->getUpdateSqlFieldName($sField));
+    }
+
+
+    /**
      * return update fields SQL part
      *
      * @param string $sTable              table name to be updated
@@ -465,7 +477,7 @@ class oxI18n extends oxBase
 
         // currently only multilanguage objects are SEO
         // if current object is managed by SEO and SEO is ON
-        if ( $blRet && $this->_blIsSeoObject && $this->isAdmin() ) {
+        if ( $blRet && $this->_blIsSeoObject && $this->getUpdateSeo() && $this->isAdmin() ) {
             // marks all object db entries as expired
             oxRegistry::get("oxSeoEncoder")->markAsExpired( $this->getId(), null, 1, $this->getLanguage() );
         }

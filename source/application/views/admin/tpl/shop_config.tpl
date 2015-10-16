@@ -384,6 +384,18 @@ function showInvitations()
 
             <dl>
                 <dt>
+                    <input type=hidden name=confbools[blEnableIntangibleProdAgreement] value=false>
+                    <input type=checkbox name=confbools[blEnableIntangibleProdAgreement] value=true  [{if ($confbools.blEnableIntangibleProdAgreement)}]checked[{/if}] [{ $readonly}]>
+                    [{oxinputhelp ident="HELP_SHOP_CONFIG_ENABLE_INTANGIBLE_PRODUCTS_AGREEMENT" }]
+                </dt>
+                <dd>
+                    [{oxmultilang ident="SHOP_CONFIG_ENABLE_INTANGIBLE_PRODUCTS_AGREEMENT" }]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+
+            <dl>
+                <dt>
                     <input type=hidden name=confbools[blStoreCreditCardInfo] value=false>
                     <input type=checkbox name=confbools[blStoreCreditCardInfo] value=true  [{if ($confbools.blStoreCreditCardInfo)}]checked[{/if}] [{ $readonly}]>
                     [{ oxinputhelp ident="HELP_SHOP_CONFIG_STORECREDITCARDINFO" }]
@@ -1281,6 +1293,23 @@ function showInvitations()
             </dl>
 
          </div>
+    </div>
+
+    <div class="groupExp">
+        <div>
+            <a href="#" onclick="_groupExp(this);return false;" class="rc"><b>[{ oxmultilang ident="SHOP_OPTIONS_BANK_INFORMATION" }]</b></a>
+            <dl>
+                <dt>
+                    <input type=hidden name=confbools[blSkipDebitOldBankInfo] value=false>
+                    <input type=checkbox name=confbools[blSkipDebitOldBankInfo] value=true  [{if ($confbools.blSkipDebitOldBankInfo)}]checked[{/if}] [{ $readonly}]>
+                    [{ oxinputhelp ident="HELP_SHOP_CONFIG_DEBIT_OLD_BANK_INFORMATION_NOT_ALLOWED" }]
+                </dt>
+                <dd>
+                    [{ oxmultilang ident="SHOP_CONFIG_DEBIT_OLD_BANK_INFORMATION_NOT_ALLOWED" }]
+                </dd>
+                <div class="spacer"></div>
+            </dl>
+        </div>
     </div>
 [{/block}]
 
